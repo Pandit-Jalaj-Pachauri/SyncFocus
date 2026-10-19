@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "SyncFocus",
+  "version": "1.2.0",
+  "description": "Track website usage and stay focused.",
+  "permissions": [
+    "tabs",
+    "storage",
+    "alarms",
+    "declarativeNetRequest",
+    "webNavigation"
+  ],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "SyncFocus",
+    "default_popup": "popup.html"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["blocked.html"],
+      "matches": ["http://*/*", "https://*/*"]
+    }
+  ]
+}

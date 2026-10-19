@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SyncFocus</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <main class="app">
+
+        <header class="header">
+            <div class="brand">
+                <div class="logo">S</div>
+                <div>
+                    <h1>SyncFocus</h1>
+                    <p>YOUR DAILY FOCUS</p>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <button id="refreshBtn" class="refresh-btn"
+                    title="Refresh usage">↻</button>
+                <button id="settingsButton" class="refresh-btn"
+                    title="Customize home screen">⚙</button>
+            </div>
+        </header>
+
+        <!-- HOME SCREEN -->
+        <section id="homeView">
+
+            <p class="home-intro">What would you like to manage?</p>
+
+            <div class="feature-grid">
+
+                <button class="feature-card focus-feature"
+                    data-feature-card="focus">
+                    <span class="feature-icon">⏱</span>
+                    <span class="feature-title">Focus Timer</span>
+                    <span class="feature-description">
+                        Start a distraction-free session
+                    </span>
+                    <span class="feature-arrow">→</span>
+                </button>
+
+                <button class="feature-card blocker-feature"
+                    data-feature-card="blocker">
+                    <span class="feature-icon">🛡</span>
+                    <span class="feature-title">Website Blocker</span>
+                    <span class="feature-description">
+                        Manage distracting websites
+                    </span>
+                    <span class="feature-arrow">→</span>
+                </button>
+
+                <button class="feature-card activity-feature"
+                    data-feature-card="activity">
+                    <span class="feature-icon">📊</span>
+                    <span class="feature-title">Website Activity</span>
+                    <span class="feature-description">
+                        Review today's browsing time
+                    </span>
+                    <span class="feature-arrow">→</span>
+                </button>
+
+                <button class="feature-card limits-feature"
+                    data-feature-card="limits">
+                    <span class="feature-icon">🎯</span>
+                    <span class="feature-title">Daily Website Limits</span>
+                    <span class="feature-description">
+                        Set daily time budgets
+                    </span>
+                    <span class="feature-arrow">→</span>
+                </button>
+
+            </div>
+
+            <section class="summary">
+                <p class="muted">Total tracked today</p>
+                <h2 id="totalTime">0m</h2>
+                <div class="progress-track">
+                    <div id="progressBar" class="progress-bar"></div>
+                </div>
+                <p id="siteCount" class="summary-note">
+                    0 websites tracked
+                </p>
+            </section>
+
+            <footer>
+                <span class="status-dot"></span>
+                Tracking stays on this device
+            </footer>
+
+        </section>
+
+        <!-- FEATURE DETAILS -->
+        <section id="featureView" hidden>
+
+            <button class="back-btn" data-back-home>← Home</button>
+
+            <!-- FOCUS TIMER -->
+            <section data-feature-section="focus" hidden>
+                <section class="focus-card">
+                    <div class="focus-heading">
+                        <div>
+                            <p class="focus-label">FOCUS SESSION</p>
+                            <h2 id="focusTimer">25:00</h2>
+                        </div>
+                        <span id="focusStatus" class="focus-status">Ready</span>
+                    </div>
+
+                    <p id="focusMessage">Ready when you are.</p>
+
+                    <div class="focus-actions">
+                        <button id="focusBtn" class="focus-btn">
+                            Start Focus
+                        </button>
+                        <button id="resetFocusBtn" class="reset-btn">
+                            Reset
+                        </button>
+                    </div>
+
+                    <select id="focusDuration">
+                        <option value="15">15 minutes</option>
+                        <option value="25" selected>25 minutes</option>
+                        <option value="45">45 minutes</option>
+                        <option value="60">60 minutes</option>
+                    </select>
+                </section>
+            </section>
+
+            <!-- WEBSITE BLOCKER -->
+            <section data-feature-section="blocker" hidden>
+                <section class="blocker-card">
+                    <div class="blocker-heading">
+                        <div>
+                            <h3>Website blocker</h3>
+                            <p>Block distracting sites during Focus Mode.</p>
+                        </div>
+                        <span id="blockerStatus" class="blocker-status">Off</span>
+                    </div>
+
+                    <form id="blockForm" class="block-form">
+                        <input id="blockDomain" type="text"
+                            placeholder="e.g. instagram.com"
+                            autocomplete="off" required>
+                        <button type="submit" class="add-block-btn">
+                            Add
+                        </button>
+                    </form>
+
+                    <p id="blockerMessage" class="blocker-message"
+                        aria-live="polite"></p>
+
+                    <div id="blockedSites" class="blocked-sites"></div>
+                </section>
+            </section>
+
+            <!-- WEBSITE ACTIVITY -->
+            <section data-feature-section="activity" hidden>
+                <section class="activity">
+                    <div class="section-heading">
+                        <h3>Website activity</h3>
+                        <span id="todayLabel"></span>
+                    </div>
+
+                    <div id="siteList" class="site-list">
+                        <p class="empty">Loading your activity...</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- DAILY WEBSITE LIMITS -->
+            <section data-feature-section="limits" hidden>
+                <section class="limits-card">
+                    <div class="section-heading">
+                        <div>
+                            <h3>Daily website limits</h3>
+                            <p class="limits-description">
+                                Set a daily time budget for distracting sites.
+                            </p>
+                        </div>
+                    </div>
+
+                    <form id="limitForm" class="limit-form">
+                        <input id="limitDomain" type="text"
+                            placeholder="e.g. instagram.com"
+                            autocomplete="off" required>
+
+                        <div class="limit-input-row">
+                            <input id="limitMinutes" type="number"
+                                min="1" max="1440"
+                                placeholder="Minutes per day" required>
+                            <button type="submit" class="set-limit-btn">
+                                Set limit
+                            </button>
+                        </div>
+                    </form>
+
+                    <p id="limitMessage" class="limit-message"
+                        aria-live="polite"></p>
+
+                    <div id="limitList" class="limit-list">
+                        <p class="empty">Loading daily limits...</p>
+                    </div>
+                </section>
+            </section>
+
+        </section>
+
+        <!-- SETTINGS -->
+        <section id="settingsView" hidden>
+            <button class="back-btn" data-back-home>← Home</button>
+
+            <section class="settings-card">
+                <h2>Customize home screen</h2>
+                <p>Choose which features appear on your home screen.</p>
+
+                <label class="setting-option">
+                    <span>
+                        <strong>Focus Timer</strong>
+                        <small>Manage focus sessions</small>
+                    </span>
+                    <input type="checkbox" data-setting-feature="focus"
+                        checked>
+                </label>
+
+                <label class="setting-option">
+                    <span>
+                        <strong>Website Blocker</strong>
+                        <small>Manage blocked websites</small>
+                    </span>
+                    <input type="checkbox" data-setting-feature="blocker"
+                        checked>
+                </label>
+
+                <label class="setting-option">
+                    <span>
+                        <strong>Website Activity</strong>
+                        <small>View tracked browsing time</small>
+                    </span>
+                    <input type="checkbox" data-setting-feature="activity">
+                </label>
+
+                <label class="setting-option">
+                    <span>
+                        <strong>Daily Website Limits</strong>
+                        <small>Manage daily time budgets</small>
+                    </span>
+                    <input type="checkbox" data-setting-feature="limits">
+                </label>
+
+                <p class="settings-note">
+                    Your preferences are saved on this device.
+                </p>
+            </section>
+        </section>
+
+    </main>
+
+    <script src="popup.js"></script>
+    <script src="popup-navigation.js"></script>
+</body>
+</html>
